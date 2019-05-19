@@ -1,0 +1,11 @@
+# object files
+*.o
+
+# images
+images/
+
+# executable
+renderer
+
+#visual studio code
+.vscode/
