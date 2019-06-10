@@ -5,7 +5,7 @@
 images/
 
 # executable
-renderer
+raytracer
 
 #visual studio code
 .vscode/
