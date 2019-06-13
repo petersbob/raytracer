@@ -21,7 +21,7 @@ struct Options {
 
 vec3 color(const ray& r, hitable *world, int depth) {
     hit_record rec;
-    if (world->hit(r, 0.001,MAXFLOAT, rec)) {
+    if (world->hit(r, 0.001,FLT_MAX, rec)) {
         ray scattered_ray;
         vec3 attenuation = vec3(0.5,0.5,0.5);
         if (depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered_ray)) {
