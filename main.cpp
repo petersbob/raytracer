@@ -47,7 +47,7 @@ hitable *random_scene() {
             vec3 center(a+0.9*drand48(),0.2,b+0.9*drand48()); 
             if ((center-vec3(4,0.2,0)).length() > 0.9) { 
                 if (choose_mat < 0.8) {  // diffuse
-                    list[i++] = new sphere(center, 0.2, new lambertain(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48())));
+                    list[i++] = new moving_sphere(center, center+vec3(0,0.5*drand48(), 0), 0, 1, 0.2, new lambertain(vec3(drand48()*drand48(), drand48()*drand48(), drand48()*drand48())));
                 }
                 else if (choose_mat < 0.95) { // metal
                     list[i++] = new sphere(center, 0.2,
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     float dist_to_focus = 10;
     float aperture = 0.1;
 
-    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(options.xResolution)/float(options.yResolution), aperture, dist_to_focus);
+    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(options.xResolution)/float(options.yResolution), aperture, dist_to_focus, 0, 1);
 
     std::vector< std::vector<int> > image(options.yResolution, std::vector<int> (options.xResolution*3, 0));
 
