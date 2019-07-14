@@ -78,7 +78,7 @@ public:
             vec3 outward_normal;
             vec3 reflected = reflect(r_in.direction(), rec.normal);
             float ni_over_nt;
-            attenuation = vec3(1.0,1.0,0.0);
+            attenuation = vec3(1.0,1.0,1.0);
             vec3 refracted;
             float reflect_prob;
             float cosine;

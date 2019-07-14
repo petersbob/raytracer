@@ -65,7 +65,7 @@ hitable *random_scene() {
                 else if (choose_mat < 0.95) { // metal
                     list[i++] = new sphere(center, 0.2, new metal(vec3(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())),  0.5*drand48()));
                 }
-                else {  // glass    hitable **world = &world_list;
+                else {  // glass
                     list[i++] = new sphere(center, 0.2, new dielectric(1.5));
                 }
             }
@@ -110,8 +110,6 @@ int main(int argc, char *argv[]) {
     outfile << "255" << std::endl;
 
     hitable *world = random_scene();
-
-    //bvh_node world_tree(&world, float(500), float(0), float(1));
 
     vec3 lookfrom(13,2,3);
     vec3 lookat(0,0,0);
