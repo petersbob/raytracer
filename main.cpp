@@ -48,7 +48,7 @@ hitable *random_scene() {
 
     int n = 500;
     hitable **list = new hitable*[n+1];
-    texture *noise = new noise_texture();
+    texture *noise = new noise_texture(10);
     list[0] =  new sphere(vec3(0,-1000,0), 1000, new lambertain(noise));
 
     int i = 1;
