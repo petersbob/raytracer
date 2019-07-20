@@ -48,7 +48,8 @@ hitable *random_scene() {
 
     int n = 500;
     hitable **list = new hitable*[n+1];
-    list[0] =  new sphere(vec3(0,-1000,0), 1000, new lambertain(colors[5]));
+    texture *noise = new noise_texture();
+    list[0] =  new sphere(vec3(0,-1000,0), 1000, new lambertain(noise));
 
     int i = 1;
     for (int a = -11; a < 11; a++) {
@@ -59,10 +60,10 @@ hitable *random_scene() {
             color = colors[ int(drand48()*5) ];
 
             if ((center-vec3(4,0.2,0)).length() > 0.9) { 
-                if (choose_mat < 0.8) {  // diffuse
-                    list[i++] = new moving_sphere(center, center+vec3(0,0.5*drand48(), 0), 0, 1, 0.2, new lambertain(color));
+                if (choose_mat < 0.3) {  // diffuse
+                    list[i++] = new sphere(center, 0.2, new lambertain(new constant_texture(color)));
                 }
-                else if (choose_mat < 0.95) { // metal
+                else if (choose_mat < 0.6) { // metal
                     list[i++] = new sphere(center, 0.2, new metal(vec3(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())),  0.5*drand48()));
                 }
                 else {  // glass
@@ -73,7 +74,7 @@ hitable *random_scene() {
     }
 
     list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
-    list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertain(colors[0]));
+    list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertain(new constant_texture(colors[0])));
     list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(colors[4], 0.0));
 
     return new bvh_node(list,i,0.0, 1.0);
