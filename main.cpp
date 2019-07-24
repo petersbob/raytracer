@@ -12,6 +12,9 @@
 #include "material.h"
 #include "parallel.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 struct Options {
     std::string fileName = "image.ppm";
     int nSamples = 1;
@@ -48,8 +51,7 @@ hitable *random_scene() {
 
     int n = 500;
     hitable **list = new hitable*[n+1];
-    texture *noise = new noise_texture(10);
-    list[0] =  new sphere(vec3(0,-1000,0), 1000, new lambertain(noise));
+    list[0] =  new sphere(vec3(0,-1000,0), 1000, new lambertain(new checker_texture(new constant_texture(colors[1]), new constant_texture(colors[2]))));
 
     int i = 1;
     for (int a = -11; a < 11; a++) {
@@ -74,8 +76,13 @@ hitable *random_scene() {
     }
 
     list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
-    list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new lambertain(new constant_texture(colors[0])));
-    list[i++] = new sphere(vec3(4, 1, 0), 1.0, new metal(colors[4], 0.0));
+
+    int nx, ny, nn;
+    unsigned char *tex_data = stbi_load("earth.jpg", &nx, &ny, &nn, 0);
+    material *mat = new lambertain(new image_texture(tex_data, nx, ny));
+    list[i++] = new sphere(vec3(4, 1, 0), 1.0, mat);
+
+    list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new metal(colors[4], 0.0));
 
     return new bvh_node(list,i,0.0, 1.0);
 }
