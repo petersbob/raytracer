@@ -42,7 +42,7 @@ vec3 color(const ray& r, hitable *world, int depth) {
     }
 }
 
-hitable *random_scene(unsigned char *tex_data) {
+hitable *random_scene(unsigned char **tex_data) {
     vec3 colors[6] = {
             vec3(0.37,0.62,0.58),
             vec3(0.24,0.21,0.22),
@@ -81,12 +81,13 @@ hitable *random_scene(unsigned char *tex_data) {
     list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
 
     int nx, ny, nn;
-    tex_data = stbi_load("earth.jpg", &nx, &ny, &nn, 0);
+    *tex_data = stbi_load("earth.jpg", &nx, &ny, &nn, 0);
     if (tex_data == NULL) {
-        std::cout << "Error loading texture!" << std::endl;
+        std::cout << "Error: texture could not be loaded!" << std::endl;
+        return NULL;
     }
 
-    material *mat = new lambertain(new image_texture(tex_data, nx, ny));
+    material *mat = new lambertain(new image_texture(*tex_data, nx, ny));
     list[i++] = new sphere(vec3(4, 1, 0), 1.0, mat);
 
     list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new metal(colors[4], 0.0));
@@ -106,6 +107,9 @@ int main(int argc, char *argv[]) {
             options.xResolution = stoi(argString.substr(14,argString.length()));
         } else if (argString.substr(0,14) == "--yResolution=") {
             options.yResolution = stoi(argString.substr(14,argString.length()));
+        } else {
+            std::cout << "Error: parameter \"" << argString << "\" unknown!" << std::endl;
+            return 0;
         }
     }
 
@@ -116,7 +120,11 @@ int main(int argc, char *argv[]) {
     std::cout<< "Creating image " << options.fileName << "..." << std::endl;
 
     unsigned char *tex_data;
-    hitable *world = random_scene(tex_data);
+    hitable *world = random_scene(&tex_data);
+    if (tex_data == NULL || world == NULL) {
+        std::cout << "Error: creating scene has failed" << std::endl;
+        return 0;
+    }
 
     vec3 lookfrom(13,2,3);
     vec3 lookat(0,0,0);
@@ -157,6 +165,6 @@ int main(int argc, char *argv[]) {
     stbi_flip_vertically_on_write(1);
     int success = stbi_write_jpg(cFileName, options.xResolution, options.yResolution, 3, image, 100);
     if (!success) {
-        std::cout << "Error writing to file!" << std::endl;
+        std::cout << "Error: writing to file failed!" << std::endl;
     }
 }
