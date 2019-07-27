@@ -81,7 +81,7 @@ hitable *random_scene(unsigned char **tex_data) {
     list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
 
     int nx, ny, nn;
-    *tex_data = stbi_load("earth.jpg", &nx, &ny, &nn, 0);
+    *tex_data = stbi_load("textures/earth.jpg", &nx, &ny, &nn, 0);
     if (tex_data == NULL) {
         std::cout << "Error: texture could not be loaded!" << std::endl;
         return NULL;
