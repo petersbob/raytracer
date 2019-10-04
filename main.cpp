@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "material.h"
 #include "parallel.h"
+#include "constant_medium.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -96,23 +97,54 @@ hitable *random_scene(unsigned char **tex_data) {
 }
 
 hitable *cornell_box() {
-    hitable **list = new hitable*[8];
+    hitable **list = new hitable*[6];
     int i = 0;
+    material *white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+
+    list[i++] = new flip_normals(new yz_rect(0, 700, 0, 700, 700, white));
+    list[i++] = new yz_rect(0, 700, 0, 700, -700, white);
+    list[i++] = new flip_normals(new xz_rect(-700, 700, -700, 700, 700, white));
+    list[i++] = new xz_rect(-700, 700, -700, 700, 0, white);
+    list[i++] = new flip_normals(new xy_rect(-700, 700, 0, 700, 700, white));
+
+    return new hitable_list(list,i);
+}
+
+hitable *final() {
+    hitable **list = new hitable*[500];
+    int count = 0;
     material *red = new lambertian( new constant_texture(vec3(0.65, 0.05, 0.05)) );
     material *white = new lambertian( new constant_texture(vec3(0.73, 0.73, 0.73)) );
     material *green = new lambertian( new constant_texture(vec3(0.12, 0.45, 0.15)) );
     material *light = new diffuse_light( new constant_texture(vec3(15, 15, 15)) );
-    list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
-    list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
-    list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
-    list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
-    list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
-    list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
 
-    list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130,0,65));
-    list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15), vec3(265,0,295));
+    list[count++] = cornell_box();
+    
+    for (int i=0; i < 6; i++) {
+        for (int j = 0; j < 6; j++) {
+            float x = (drand48()*900)-450;
+            float y = drand48()*700;  
+            float z = (drand48()*900)-450;
 
-    return new hitable_list(list,i);
+            list[count++] = new sphere(vec3(x,y,z), 50, white);
+        }
+    }
+
+    for (int i=0; i < 28; i++) {
+
+        list[count++] = new box(
+            vec3(650-(50*i),0,400-drand48()*100),
+            vec3(700-(50*i),100+drand48()*200,700),
+            green
+        );
+
+    }
+
+    list[count++] = new constant_medium(cornell_box(), 0.01, new constant_texture(vec3(1.0, 1.0, 1.0)));
+
+    list[count++] = new xz_rect(-200, 200, 0, 200, 554, light);
+
+    return new hitable_list(list, count);
 }
 
 int main(int argc, char *argv[]) {
@@ -142,14 +174,14 @@ int main(int argc, char *argv[]) {
 
     unsigned char *tex_data;
     //hitable *world = random_scene(&tex_data);
-    hitable *world = cornell_box();
+    hitable *world = final();
     // if (tex_data == NULL || world == NULL) {
     //     std::cout << "Error: creating scene has failed" << std::endl;
     //     return 0;
     // }
 
-    vec3 lookfrom(278,278,-800);
-    vec3 lookat(278,278,0);
+    vec3 lookfrom(0,278,-800);
+    vec3 lookat(0,278,0);
     float dist_to_focus = 10;
     float aperture = 0.0;
 
