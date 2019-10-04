@@ -67,7 +67,7 @@ hitable *random_scene(unsigned char **tex_data) {
 
             if ((center-vec3(4,0.2,0)).length() > 0.9) { 
                 if (choose_mat < 0.3) {  // diffuse
-                    list[i++] = new sphere(center, 0.2, new lambertain(new constant_texture(color)));
+                    list[i++] = new sphere(center, 0.2, new lambertian(new constant_texture(color)));
                 }
                 else if (choose_mat < 0.6) { // metal
                     list[i++] = new sphere(center, 0.2, new metal(vec3(0.5*(1 + drand48()), 0.5*(1 + drand48()), 0.5*(1 + drand48())),  0.5*drand48()));
@@ -88,7 +88,7 @@ hitable *random_scene(unsigned char **tex_data) {
         return NULL;
     }
 
-    material *mat = new lambertain(new image_texture(*tex_data, nx, ny));
+    material *mat = new lambertian(new image_texture(*tex_data, nx, ny));
     list[i++] = new sphere(vec3(4, 1, 0), 1.0, mat);
 
     list[i++] = new sphere(vec3(-4, 1, 0), 1.0, new metal(colors[4], 0.0));
@@ -98,9 +98,9 @@ hitable *random_scene(unsigned char **tex_data) {
 hitable *cornell_box() {
     hitable **list = new hitable*[8];
     int i = 0;
-    material *red = new lambertain( new constant_texture(vec3(0.65, 0.05, 0.05)) );
-    material *white = new lambertain( new constant_texture(vec3(0.73, 0.73, 0.73)) );
-    material *green = new lambertain( new constant_texture(vec3(0.12, 0.45, 0.15)) );
+    material *red = new lambertian( new constant_texture(vec3(0.65, 0.05, 0.05)) );
+    material *white = new lambertian( new constant_texture(vec3(0.73, 0.73, 0.73)) );
+    material *green = new lambertian( new constant_texture(vec3(0.12, 0.45, 0.15)) );
     material *light = new diffuse_light( new constant_texture(vec3(15, 15, 15)) );
     list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
     list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
