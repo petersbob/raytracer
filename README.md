@@ -4,6 +4,6 @@ This is a ray tracer built using Peter Shirley's amazing ray tracing in a weeken
 
 While I'm still adding features to it, here are some images made with the project.
 
-![Earth](https://github.com/petersbob/raytracer/examples/earth.jpg)
-![Motion Blur](https://github.com/petersbob/raytracer/examples/motionblur.jpg)
-![WIP](https://github.com/petersbob/raytracer/examples/wip.jpg)
+![Earth](examples/earth.jpg)
+![Motion Blur](examples/motionblur.jpg)
+![WIP](examples/wip.jpg)
